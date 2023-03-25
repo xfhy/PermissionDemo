@@ -8,10 +8,6 @@ import com.xfhy.permission.PermissionsHelper
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val TAG = "MainActivity"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,7 +20,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun reqPermission() {
         PermissionsHelper.init(this)
-            .requestEachPermissions(Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR) { permissionResult ->
+            .requestPermissions(
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.SYSTEM_ALERT_WINDOW
+            ) { permissionResult ->
                 permissionResult.logResult()
             }
     }

@@ -1,4 +1,4 @@
-package com.xfhy.permission
+package com.xfhy.permission.result
 
 import java.util.LinkedHashSet
 

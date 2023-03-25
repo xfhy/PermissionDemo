@@ -1,49 +1,54 @@
 package com.xfhy.permission
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import com.xfhy.permission.ReqPermissionFragment.Companion.newInstance
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.Fragment
-import java.lang.Exception
+import com.xfhy.permission.common.specialPermission
+import com.xfhy.permission.req.PermissionContext
+import com.xfhy.permission.req.RuntimePermissionRequest
+import com.xfhy.permission.req.SystemAlertWindowRequest
+import com.xfhy.permission.result.IPermissionCallback
 
 class PermissionsHelper {
-    private var mActivity: FragmentActivity? = null
-    private var mFragment: Fragment? = null
+    private val mPermissionContext = PermissionContext()
 
     constructor(activity: FragmentActivity) {
-        mActivity = activity
+        mPermissionContext.activity = activity
     }
 
     constructor(fragment: Fragment) {
-        mFragment = fragment
+        mPermissionContext.fragment = fragment
+        mPermissionContext.activity = fragment.requireActivity()
     }
 
-    fun requestEachPermissions(vararg permissions: String, eachPermissionListener: IPermissionCallback) {
-        reqPermissionFragment.requestPermissions(setOf(*permissions).toTypedArray(), eachPermissionListener)
+    fun requestPermissions(vararg permissions: String, permissionCallback: IPermissionCallback) {
+        preprocessPermissions(linkedSetOf(*permissions))
+        mPermissionContext.permissionCallback = permissionCallback
+        val reqList = listOf(
+            RuntimePermissionRequest(mPermissionContext),
+            SystemAlertWindowRequest(mPermissionContext)
+        )
+        reqList[0].reqPermission(reqList, 0)
     }
 
-    private val reqPermissionFragment: ReqPermissionFragment
-        get() {
-            val fragmentManager = mActivity?.supportFragmentManager ?: mFragment?.childFragmentManager
-            var fragment = fragmentManager!!.findFragmentByTag(TAG_FRAGMENT_PERMISSION) as? ReqPermissionFragment
-            if (fragment == null) {
-                fragment = newInstance()
-                fragmentManager
-                    .beginTransaction()
-                    .add(fragment, TAG_FRAGMENT_PERMISSION)
-                    .commitAllowingStateLoss()
-                fragmentManager.executePendingTransactions()
+    private fun preprocessPermissions(permissions: Set<String>) {
+        mPermissionContext.runtimePermissions.clear()
+        mPermissionContext.specialPermissions.clear()
+        for (permission in permissions) {
+            if (isSpecialPermission(permission)) {
+                mPermissionContext.specialPermissions.add(permission)
+            } else {
+                mPermissionContext.runtimePermissions.add(permission)
             }
-            return fragment
         }
+    }
+
+    private fun isSpecialPermission(permission: String) = specialPermission.contains(permission)
 
     companion object {
-        private const val TAG_FRAGMENT_PERMISSION = "tag_fragment_permission"
-
         fun init(fragmentActivity: FragmentActivity): PermissionsHelper {
             return PermissionsHelper(fragmentActivity)
         }

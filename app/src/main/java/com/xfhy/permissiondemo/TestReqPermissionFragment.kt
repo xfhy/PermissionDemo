@@ -25,7 +25,11 @@ class TestReqPermissionFragment : Fragment() {
 
     private fun reqPermission() {
         PermissionsHelper.init(this)
-            .requestEachPermissions(Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR) { permissionResult ->
+            .requestPermissions(
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.SYSTEM_ALERT_WINDOW
+            ) { permissionResult ->
                 permissionResult.logResult()
             }
     }
