@@ -18,11 +18,15 @@ class MainActivity : AppCompatActivity() {
 
         addFragment()
         findViewById<Button>(R.id.btn_req_permission).setOnClickListener {
-            PermissionsHelper.init(this@MainActivity)
-                .requestEachPermissions(
-                    Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR
-                ) { permissionResult -> permissionResult.logResult() }
+            reqPermission()
         }
+    }
+
+    private fun reqPermission() {
+        PermissionsHelper.init(this)
+            .requestEachPermissions(Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR) { permissionResult ->
+                permissionResult.logResult()
+            }
     }
 
     private fun addFragment() {
@@ -32,22 +36,5 @@ class MainActivity : AppCompatActivity() {
             .commitAllowingStateLoss()
         supportFragmentManager.executePendingTransactions()
     }
-
-//    private fun show(permissionResult: PermissionResult) {
-//        if (permissionResult.isGranted) {
-//            show("授予权限 ：" + permissionResult.permissionName)
-//        } else {
-//            if (permissionResult.shouldShowRequestPermissionRationale) {
-//                show("没有勾选不再提醒，拒绝权限 ：" + permissionResult.permissionName)
-//            } else {
-//                show("勾选不再提醒，拒绝权限 ：" + permissionResult.permissionName)
-//            }
-//        }
-//    }
-//
-//    fun show(text: CharSequence) {
-//        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
-//        Log.d(TAG, "$text")
-//    }
 
 }

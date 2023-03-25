@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.xfhy.permission.PermissionResult
 import com.xfhy.permission.PermissionsHelper
 
 
@@ -27,25 +25,9 @@ class TestReqPermissionFragment : Fragment() {
 
     private fun reqPermission() {
         PermissionsHelper.init(this)
-            .requestEachPermissions(
-                Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR
-            ) { permissionResult -> permissionResult.logResult() }
+            .requestEachPermissions(Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CALENDAR) { permissionResult ->
+                permissionResult.logResult()
+            }
     }
-//
-//    private fun show(permissionResult: PermissionResult) {
-//        if (permissionResult.isGranted) {
-//            show("授予权限 ：" + permissionResult.permissionName)
-//        } else {
-//            if (permissionResult.shouldShowRequestPermissionRationale) {
-//                show("没有勾选不再提醒，拒绝权限 ：" + permissionResult.permissionName)
-//            } else {
-//                show("勾选不再提醒，拒绝权限 ：" + permissionResult.permissionName)
-//            }
-//        }
-//    }
-//
-//    fun show(text: CharSequence) {
-//        Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
-//    }
 
 }
